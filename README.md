@@ -1,6 +1,6 @@
 ## About
 
-This repository contains lab exercises for the [COMP0037 Robotic Systems](https://moodle.ucl.ac.uk/course/view.php?id=33669&section=0) module for taught MSc students at UCL, delivered in Spring 2026. Exercises are designed to be attempted in the on-campus lab sessions on Friday afternoon, though you are free to do additional work in your own time if you wish.
+This repository contains lab exercises for the [COMP0037 Robotic Systems](https://moodle.ucl.ac.uk/course/view.php?id=33669&section=0) module for undergraduate students undertaking the IEP Intelligent Systems Minor, delivered in Spring 2026. Exercises are designed to be attempted in the on-campus lab sessions on Friday afternoon, though you are free to do additional work in your own time if you wish.
 
 Lab attendance will be monitored, but the exercises are **not graded**. You are welcome to discuss and help each other with these tasks and to ask for assistance and clarification from the TAs, but there is nothing to be gained by simply copying each others' work.
 
