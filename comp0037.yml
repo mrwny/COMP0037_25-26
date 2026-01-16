@@ -1,0 +1,14 @@
+name: comp0037-env
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.12
+  - pip
+  - numpy
+  - matplotlib
+  - gymnasium
+  - ghostscript
+  
+  - pip:
+    - ghostscript
+    - pyscreenshot
