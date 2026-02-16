@@ -7,6 +7,7 @@ Created on 13 Jan 2022
 import math
 
 import numpy as np
+from .bandit import BanditEnvironment
 
 # The agent is our octopus which can pull the different arms on the
 # bandits. Note this is the base class for the agent. It sets up
@@ -19,7 +20,7 @@ class Agent(object):
     classdocs
     '''
 
-    def __init__(self, environment):
+    def __init__(self, environment: BanditEnvironment):
         # Store the environment and common information
         self._environment = environment
         self._number_of_bandits = self._environment.number_of_bandits()

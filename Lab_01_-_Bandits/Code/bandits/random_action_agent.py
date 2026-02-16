@@ -22,6 +22,6 @@ class RandomActionAgent(Agent):
     # Q3a:
     # Choose a random action the agent will perform
     def _choose_action(self):
-        return 0
+        return self._environment.action_space.sample()
 
         
