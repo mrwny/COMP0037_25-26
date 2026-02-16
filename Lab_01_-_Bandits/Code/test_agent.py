@@ -40,8 +40,14 @@ if __name__ == '__main__':
     # Plot the actions and rewards
 
     plt.figure(1)
+    plt.xlabel('Sample number')
+    plt.ylabel('Reward')
+    plt.plot(reward_history, color = 'green', label = 'Reward')
 
     plt.figure(2)
+    plt.xlabel('Sample number')
+    plt.ylabel('Reward')
+    plt.plot(action_history, color = 'red', label = 'Actions')
     
     plt.ion()
     plt.show()
