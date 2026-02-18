@@ -32,7 +32,7 @@ if __name__ == '__main__':
     airport_environment = HighLevelEnvironment(airport_map, PlannerType.A_STAR)
     
     # Show the graphics
-    airport_environment.show_verbose_graphics(False)
+    airport_environment.show_graphics(True)
     
     # First specify the start location of the robot
     action = (HighLevelActionType.TELEPORT_ROBOT_TO_NEW_POSITION, (0, 0))
@@ -43,29 +43,36 @@ if __name__ == '__main__':
         
     # Get all the rubbish bins and toilets; these are places which need cleaning
     all_rubbish_bins = airport_map.all_rubbish_bins()
+
+    bin_number = 1
+    total_path_cost = 0
+    total_cells_visited = 0
         
     # Q1f:
     # Modify to collect statistics for assessing algorithms
     # Now go through them and plan a path sequentially
     for rubbish_bin in all_rubbish_bins:
-            action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION, rubbish_bin.coords())
-            observation, reward, done, info = airport_environment.step(action)
+        action = (HighLevelActionType.DRIVE_ROBOT_TO_NEW_POSITION, rubbish_bin.coords())
+        observation, reward, done, info = airport_environment.step(action)
 
-            plan = info
-            path_cost = plan.path_travel_cost
-            cells_visited = plan.number_of_cells_visited
-            
-            total_path_cost += path_cost
-            total_cells_visited += cells_visited
-            
-            print(f"Bin {bin_number}: target={rubbish_bin.coords()}, path_cost={path_cost:.2f}, cells_visited={cells_visited}")
-            
-            screen_shot_name = f'bin_{bin_number:02}.pdf'
-            airport_environment.search_grid_drawer().save_screenshot(screen_shot_name)
-            bin_number += 1
+        plan = info
+        path_cost = plan.path_travel_cost
+        cells_visited = plan.number_of_cells_visited
+        
+        total_path_cost += path_cost
+        total_cells_visited += cells_visited
+        
+        print(f"Bin {bin_number}: target={rubbish_bin.coords()}, path_cost={path_cost:.2f}, cells_visited={cells_visited}")
+        
+        screen_shot_name = f'bin_{bin_number:02}.pdf'
+        bin_number += 1
+
+        try:
+            input("Press enter in the command window to continue.....")
+        except SyntaxError:
+            pass  
     
-            try:
-                input("Press enter in the command window to continue.....")
-            except SyntaxError:
-                pass  
-    
+    print(f"\n=== SUMMARY ===")
+    print(f"Total path cost: {total_path_cost:.2f}")
+    print(f"Total cells visited: {total_cells_visited}")
+    print(f"Number of bins: {bin_number - 1}")

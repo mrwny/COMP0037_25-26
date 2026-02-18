@@ -21,7 +21,7 @@ class AStarPlanner(DijkstraPlanner):
     def push_cell_onto_queue(self, cell):
         # Insert the cell into the priority queue, keyed by its f-value (g + h).
         # The g-value is the path_cost (cost-to-come), and the h-value is the heuristic cost-to-go.
-        f_value = cell.path_cost + self.compute_heuristic_cost_to_go(cell)
+        f_value = cell.path_cost + self.compute_heuristic_cost_to_go(cell, self.goal)
         self.priority_queue.put((f_value, cell))
     
     @override
@@ -38,11 +38,13 @@ class AStarPlanner(DijkstraPlanner):
             # re-expanded at the correct priority
             self.push_cell_onto_queue(cell)
     
-    def compute_heuristic_cost_to_go(self, cell):
+    def compute_heuristic_cost_to_go(self, cell, goal_cell):
         # Compute the heuristic cost-to-go (h-value) from the given cell to the goal.
         # For a grid, a common heuristic is the Manhattan distance or Euclidean distance.
         # Here we use the Euclidean distance as the heuristic.
-
-        goal_cell = self.occupancy_grid.goal_cell
-        h_cost = math.sqrt((cell.x - goal_cell.x) ** 2 + (cell.y - goal_cell.y) ** 2)
+        
+        cell_coords = cell.coords()
+        goal_coords = goal_cell.coords()
+        
+        h_cost = math.sqrt((cell_coords[0] - goal_coords[0]) ** 2 + (cell_coords[1] - goal_coords[1]) ** 2)
         return h_cost
