@@ -214,7 +214,20 @@ class AirportMap(CellGrid):
         # Q1f:
         # Modify the transition costs depending upon the
         # semantic label of the map cell
-
+        
+        if self._use_cell_type_traversability_costs:
+            cell = self._map[current_coords[0]][current_coords[1]]
+            cell_type = cell.cell_type()
+            
+            if cell_type == MapCellType.SECRET_DOOR:
+                alpha = 5
+            elif cell_type == MapCellType.CUSTOMS_AREA:
+                alpha = 100
+            else:
+                alpha = 1
+            
+            return alpha * L
+        
         return L
         
     def populate_search_grid(self, search_grid):
@@ -222,5 +235,4 @@ class AirportMap(CellGrid):
                      for x in range(self._width)]
         
         search_grid._set_search_grid(grid)
-
-    
+        
