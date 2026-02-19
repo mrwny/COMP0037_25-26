@@ -26,9 +26,14 @@ if __name__ == '__main__':
 
     # Create the policy iterator
     policy_solver = PolicyIterator(airport_environment)
-
+    
     # Set up initial state
     policy_solver.initialize()
+    # Q3b fix: set gamma < 1 to ensure convergence
+    policy_solver.set_gamma(0.90)
+    
+    # We only do 10 policy evaluation steps per iteration
+    policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
     
     # We only do 10 policy evaluation steps per iteration
     policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
