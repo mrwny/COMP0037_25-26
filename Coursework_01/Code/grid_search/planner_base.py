@@ -286,6 +286,7 @@ class PlannerBase(object):
         # Now go forwards through the path and construct the cost. We could do it
         # going backwards at path assembly time, but this is easier!
         path_cost = 0
+        weighted_path_cost = 0
         
         for cell in path.waypoints:
             if cell.parent is not None:
@@ -293,9 +294,11 @@ class PlannerBase(object):
                 cell_coords = cell.coords()
                 dX = parent_coords[0] - cell_coords[0]
                 dY = parent_coords[1] - cell_coords[1]                
-                path_cost = path_cost + math.sqrt(dX * dX + dY * dY)               
+                path_cost = path_cost + math.sqrt(dX * dX + dY * dY)  
+                weighted_path_cost += self._environment_map.compute_transition_cost(parent_coords, cell_coords)  
 
         path.path_travel_cost = path_cost
+        path.weighted_path_travel_cost = weighted_path_cost
 
         # Return the path
         return path

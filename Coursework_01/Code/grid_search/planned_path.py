@@ -19,6 +19,7 @@ class PlannedPath(object):
         # travel cost of the path.
         self.number_of_waypoints = 0
         self.path_travel_cost = 0
+        self.weighted_path_travel_cost = 0
         
         # The number of cells visited to plan the path
         self.number_of_cells_visited = 0

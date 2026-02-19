@@ -40,7 +40,6 @@ class AStarPlanner(DijkstraPlanner):
     
     def compute_heuristic_cost_to_go(self, cell, goal_cell):
         # Compute the heuristic cost-to-go (h-value) from the given cell to the goal.
-        # For a grid, a common heuristic is the Manhattan distance or Euclidean distance.
         # Here we use the Euclidean distance as the heuristic.
         
         cell_coords = cell.coords()
