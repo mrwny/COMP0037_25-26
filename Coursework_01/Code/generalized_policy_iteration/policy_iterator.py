@@ -147,17 +147,36 @@ class PolicyIterator(DynamicProgrammingBase):
 
     def _improve_policy(self) -> bool:
 
-        # Q3c:
-        # Implement the policy improvement step.
-        # This step will write the update to self._pi
-        
-        # Get the environment and map
         environment = self._environment
         map = environment.map()
 
         policy_stable = True
 
-        # Return true if the policy is stable (=isn't changing)     
+        for x in range(map.width()):
+            for y in range(map.height()):
+
+                if map.cell(x, y).is_obstruction() or map.cell(x, y).is_terminal():
+                    continue
+
+                cell = (x, y)
+                old_action = self._pi.action(x, y)
+                best_action = old_action
+                best_q = -float('inf')
+
+                for action in range(8):
+                    s_prime, r, p = environment.next_state_and_reward_distribution(cell, action)
+                    q = 0
+                    for t in range(len(p)):
+                        sc = s_prime[t].coords()
+                        q += p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1]))
+                    if q > best_q:
+                        best_q = q
+                        best_action = action
+
+                self._pi.set_action(x, y, best_action)
+                if best_action != old_action:
+                    policy_stable = False
+
         return policy_stable
                     
                 
