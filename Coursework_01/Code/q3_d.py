@@ -23,7 +23,7 @@ if __name__ == '__main__':
     
     # Q3d:
     # Configure the process model using different probabilities
-    airport_environment.set_nominal_direction_probability(1)
+    airport_environment.set_nominal_direction_probability(0.8)
 
     # Note that you can create multiple instances of the same object, with different
     # settings, and run them in the same programme. Therefore, you do not need to
@@ -46,7 +46,8 @@ if __name__ == '__main__':
     v, pi = policy_solver.solve_policy()
     
     # Save screen shot; this is in the current directory
-    policy_drawer.save_screenshot("policy_iteration_results.jpg")
+    policy_drawer.save_screenshot("policy_iteration_results_4.pdf")
+    value_function_drawer.save_screenshot("value_function_results_4.pdf")
     
     # Wait for a key press
     value_function_drawer.wait_for_key_press()
