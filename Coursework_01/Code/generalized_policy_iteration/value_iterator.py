@@ -4,6 +4,7 @@ Created on 29 Jan 2022
 @author: ucacsjj
 '''
 
+from p2.low_level_actions import LowLevelActionType
 from .dynamic_programming_base import DynamicProgrammingBase
 
 # This class ipmlements the value iteration algorithm
@@ -53,11 +54,112 @@ class ValueIterator(DynamicProgrammingBase):
         # This method returns no value.
         # The method updates self._pi
 
-        raise NotImplementedError()
+                
+        # Get the environment and map
+        environment = self._environment
+        map = environment.map()
+        
+        # Execute the loop at least once
+        
+        iteration = 0
+        
+        while True:
+            
+            delta = 0
+
+            # Sweep systematically over all the states            
+            for x in range(map.width()):
+                for y in range(map.height()):
+                    
+                    # We skip obstructions and terminals. If a cell is obstructed,
+                    # there's no action the robot can take to access it, so it doesn't
+                    # count. If the cell is terminal, it executes the terminal action
+                    # state. The value of the value of the terminal cell is the reward.
+                    # The reward itself was set up as part of the initial conditions for the
+                    # value function.
+                    if map.cell(x, y).is_obstruction() or map.cell(x, y).is_terminal():
+                        continue
+                                       
+                    # Unfortunately the need to use coordinates is a bit inefficient, due
+                    # to legacy code
+                    cell = (x, y)
+                    
+                    # Get the previous value function
+                    old_v = self._v.value(x, y)
+                    max_v = -float('inf')
+                 
+                    #find max
+                    # for action in range(8):
+
+                    for action in LowLevelActionType:
+                        if action > LowLevelActionType.TERMINATE-1:
+                            continue
+                        # Compute p(s',r|s,a)
+                        s_prime, r, p = environment.next_state_and_reward_distribution(cell,
+                                                                                        # \ self._pi.action(x, y))
+                                                                                        action)
+
+                        # Sum over the rewards
+                        new_v = 0
+                        for t in range(len(p)):
+                            sc = s_prime[t].coords()
+                            new_v = new_v + p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1])) 
+
+                        max_v = max(max_v, new_v)
+                  
+                            
+                    # Set the new value in the value function
+                    self._v.set_value(x, y, max_v)
+                                        
+                    # Update the maximum deviation
+                    delta = max(delta, abs(old_v-max_v))
+ 
+            # Increment the policy evaluation counter        
+            iteration += 1
+                       
+            print(f'Finished policy evaluation iteration {iteration}')
+            
+            # Terminate the loop if the change was very small
+            if delta < self._theta:
+                break
+                
+            # Terminate the loop if the maximum number of iterations is met. Generate
+            # a warning
+            if iteration >= self._max_optimal_value_function_iterations:
+                print('Maximum number of iterations exceeded')
+                break
+    
+
 
     def _extract_policy(self):
 
         # This method returns no value.
         # The policy is in self._pi
 
-        raise NotImplementedError()
+        environment = self._environment
+        map = environment.map()
+
+        for x in range(map.width()):
+            for y in range(map.height()):
+
+                if map.cell(x, y).is_obstruction() or map.cell(x, y).is_terminal():
+                    continue
+
+                cell = (x, y)
+                best_q = -float('inf')
+                best_action = None
+
+                for action in LowLevelActionType:
+                    if action > LowLevelActionType.TERMINATE-1:
+                        continue
+                    s_prime, r, p = environment.next_state_and_reward_distribution(cell, action)
+                    
+                    q = 0
+                    for t in range(len(p)):
+                        sc = s_prime[t].coords()
+                        q += p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1]))
+                    
+                    if q > best_q:
+                        best_q, best_action = q, action
+
+                self._pi.set_action(x, y, best_action)
