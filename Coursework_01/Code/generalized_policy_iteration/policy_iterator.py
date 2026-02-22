@@ -24,6 +24,10 @@ class PolicyIterator(DynamicProgrammingBase):
         # The maximum number of times the policy evaluation iteration
         # is carried out.
         self._max_policy_iteration_steps = 1000
+
+        self._policy_improvement_iterations = 0
+        self._total_policy_evaluation_sweeps = 0
+        self._bellman_updates = 0
         
 
     # Perform policy evaluation for the current policy, and return
@@ -37,6 +41,9 @@ class PolicyIterator(DynamicProgrammingBase):
         return self._v
         
     def solve_policy(self):
+        self._policy_improvement_iterations = 0
+        self._total_policy_evaluation_sweeps = 0
+        self._bellman_updates = 0
                             
         # Initialize the drawers if defined
         if self._policy_drawer is not None:
@@ -67,6 +74,9 @@ class PolicyIterator(DynamicProgrammingBase):
                 self._value_drawer.update()
                 
             policy_iteration_step += 1
+            print('number of policy iterations: ', policy_iteration_step)
+        self._policy_improvement_iterations = policy_iteration_step
+            
 
         # Draw one last time to clear any transients which might
         # draw changes
@@ -75,7 +85,7 @@ class PolicyIterator(DynamicProgrammingBase):
             
         if self._value_drawer is not None:
             self._value_drawer.update()
-
+        
         # Return the value function and policy of the solution
         return self._v, self._pi
 
@@ -122,7 +132,8 @@ class PolicyIterator(DynamicProgrammingBase):
                     new_v = 0
                     for t in range(len(p)):
                         sc = s_prime[t].coords()
-                        new_v = new_v + p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1]))                        
+                        new_v = new_v + p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1]))   
+                    self._bellman_updates += 1                     
                         
                     # Set the new value in the value function
                     self._v.set_value(x, y, new_v)
@@ -144,6 +155,8 @@ class PolicyIterator(DynamicProgrammingBase):
             if iteration >= self._max_policy_evaluation_steps_per_iteration:
                 print('Maximum number of iterations exceeded')
                 break
+
+        self._total_policy_evaluation_sweeps += iteration
 
     def _improve_policy(self) -> bool:
 
@@ -169,6 +182,9 @@ class PolicyIterator(DynamicProgrammingBase):
                     for t in range(len(p)):
                         sc = s_prime[t].coords()
                         q += p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1]))
+
+                    self._bellman_updates += 1   
+
                     if q > best_q:
                         best_q = q
                         best_action = action
@@ -183,6 +199,16 @@ class PolicyIterator(DynamicProgrammingBase):
     def set_max_policy_evaluation_steps_per_iteration(self, \
                                                       max_policy_evaluation_steps_per_iteration):
             self._max_policy_evaluation_steps_per_iteration = max_policy_evaluation_steps_per_iteration
-                
-                
+
+    
+    def policy_improvement_iterations(self):
+        return self._policy_improvement_iterations
+
+    def total_policy_evaluation_sweeps(self):
+        return self._total_policy_evaluation_sweeps
+    
+    def bellman_updates(self):
+        return self._bellman_updates
+                    
+                    
             

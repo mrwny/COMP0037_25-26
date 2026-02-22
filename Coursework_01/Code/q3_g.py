@@ -6,12 +6,29 @@ Created on 3 Feb 2022
 @author: ucacsjj
 '''
 
+import time
+
+from generalized_policy_iteration.value_iterator import ValueIterator
 from common.scenarios import *
 from generalized_policy_iteration.policy_iterator import PolicyIterator
 from generalized_policy_iteration.value_function_drawer import \
     ValueFunctionDrawer
 from p2.low_level_environment import LowLevelEnvironment
 from p2.low_level_policy_drawer import LowLevelPolicyDrawer
+
+def calc_policy_diffs(env, pi_1, pi_2):
+    map = env.map()
+    diff = 0
+    total = 0
+    for x in range(map.width()):
+        for y in range(map.height()):
+            if map.cell(x, y).is_obstruction() or map.cell(x, y).is_terminal():
+                continue
+            total += 1
+            if pi_1.action(x, y) != pi_2.action(x, y):
+                diff += 1
+    return diff, total
+
 
 if __name__ == '__main__':
     
@@ -31,23 +48,43 @@ if __name__ == '__main__':
     # Set up initial state
     policy_solver.initialize()
         
-    # Bind the drawer with the solver
-    policy_drawer = LowLevelPolicyDrawer(policy_solver.policy(), drawer_height)
-    policy_solver.set_policy_drawer(policy_drawer)
+    # # Bind the drawer with the solver
+    # policy_drawer = LowLevelPolicyDrawer(policy_solver.policy(), drawer_height)
+    # policy_solver.set_policy_drawer(policy_drawer)
     
-    value_function_drawer = ValueFunctionDrawer(policy_solver.value_function(), drawer_height)
-    policy_solver.set_value_function_drawer(value_function_drawer)
-        
+    # value_function_drawer = ValueFunctionDrawer(policy_solver.value_function(), drawer_height)
+    # policy_solver.set_value_function_drawer(value_function_drawer)
+
+    t_policy_start = time.time() 
     # Compute the solution
-    v, pi = policy_solver.solve_policy()
+    v_policy, pi_policy = policy_solver.solve_policy()
+    t_policy_end = time.time()
+    pi_runtime = t_policy_end - t_policy_start
     
-    # Save screen shot; this is in the current directory
-    policy_drawer.save_screenshot("policy_iteration_results.pdf")
+    # # Save screen shot; this is in the current directory
+    # policy_drawer.save_screenshot("policy_iteration_results.pdf")
     
-    # Wait for a key press
-    value_function_drawer.wait_for_key_press()
+    # # Wait for a key press
+    # value_function_drawer.wait_for_key_press()
     
     # Q3i: Add code to evaluate value iteration down here.
-    
-    
-    
+    vi_solver = ValueIterator(airport_environment)
+    vi_solver.initialize()
+    t_vi_start = time.time() 
+    # Compute the solution
+    v_value_iteration, pi_value_iteration = vi_solver.solve_policy()
+    t_vi_end = time.time()
+    vi_runtime = t_vi_end - t_vi_start
+
+    diff, total = calc_policy_diffs(airport_environment, pi_policy, pi_value_iteration)
+
+    print(f'Policy iteration runtime: {pi_runtime:.2f} seconds')
+    print(f'Value iteration runtime: {vi_runtime:.2f} seconds')
+    print(f'Policy differences: {diff} out of {total} states')
+
+    print("Policy iteration outer iterations:", policy_solver.policy_improvement_iterations())
+    print("Policy iteration total evaluation sweeps:", policy_solver.total_policy_evaluation_sweeps())
+    print("Value iteration sweeps:", vi_solver.value_iteration_sweeps())
+
+    print("Policy iteration bellman updates:", policy_solver.bellman_updates())
+    print("Value iteration bellman updates:", vi_solver.bellman_updates())

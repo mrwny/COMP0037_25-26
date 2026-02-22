@@ -17,6 +17,8 @@ class ValueIterator(DynamicProgrammingBase):
         # The maximum number of times the value iteration
         # algorithm is carried out is carried out.
         self._max_optimal_value_function_iterations = 2000
+        self._value_iteration_sweeps = 0
+        self._bellman_updates = 0
    
     # Method to change the maximum number of iterations
     def set_max_optimal_value_function_iterations(self, max_optimal_value_function_iterations):
@@ -24,6 +26,8 @@ class ValueIterator(DynamicProgrammingBase):
 
     #    
     def solve_policy(self):
+        self._value_iteration_sweeps = 0
+        self._bellman_updates = 0
 
         # Initialize the drawers
         if self._policy_drawer is not None:
@@ -105,6 +109,7 @@ class ValueIterator(DynamicProgrammingBase):
                             sc = s_prime[t].coords()
                             new_v = new_v + p[t] * (r[t] + self._gamma * self._v.value(sc[0], sc[1])) 
 
+                        self._bellman_updates += 1
                         max_v = max(max_v, new_v)
                   
                             
@@ -116,8 +121,9 @@ class ValueIterator(DynamicProgrammingBase):
  
             # Increment the policy evaluation counter        
             iteration += 1
-                       
-            print(f'Finished policy evaluation iteration {iteration}')
+            
+            self._value_iteration_sweeps = iteration
+            print(f'Finished value iteration sweep {iteration}')
             
             # Terminate the loop if the change was very small
             if delta < self._theta:
@@ -163,3 +169,10 @@ class ValueIterator(DynamicProgrammingBase):
                         best_q, best_action = q, action
 
                 self._pi.set_action(x, y, best_action)
+
+
+    def value_iteration_sweeps(self):
+        return self._value_iteration_sweeps
+    
+    def bellman_updates(self):
+        return self._bellman_updates
