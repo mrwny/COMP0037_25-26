@@ -57,7 +57,6 @@ if __name__ == '__main__':
         observation, reward, done, info = airport_environment.step(action)
 
         plan = info
-        # path_cost + penalty
         path_cost = plan.path_travel_cost
         weighted_path_cost = plan.weighted_path_travel_cost
         cells_visited = plan.number_of_cells_visited
@@ -75,7 +74,7 @@ if __name__ == '__main__':
         try:
             input("Press enter in the command window to continue.....")
         except SyntaxError:
-            pass  
+            pass
     
     print(f"\n=== SUMMARY ===")
     print(f"Total path cost: {total_path_cost:.2f}")
