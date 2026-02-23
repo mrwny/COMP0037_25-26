@@ -49,27 +49,11 @@ def helper(airport_map, theta, max_eval_steps):
 
     # Set up initial state
     policy_solver.initialize()
-
-    # NOTE: Commented out all the GUI as not really needed
-
-    # Bind the drawer with the solver
-    # policy_drawer = LowLevelPolicyDrawer(policy_solver.policy(), drawer_height)
-    # policy_solver.set_policy_drawer(policy_drawer)
-    
-    # value_function_drawer = ValueFunctionDrawer(policy_solver.value_function(), drawer_height)
-    # policy_solver.set_value_function_drawer(value_function_drawer)
-
-    # metrics 
+ 
     t_start = time.time()  
-    # Compute the solution
     v, pi = policy_solver.solve_policy()
     runtime = time.time() - t_start
-    
-    # # Save screen shot; this is in the current directory
-    # policy_drawer.save_screenshot("policy_iteration_results.jpg")
-    
-    # # Wait for a key press
-    # value_function_drawer.wait_for_key_press()
+
 
     return v, pi, runtime
 

@@ -47,13 +47,6 @@ if __name__ == '__main__':
     
     # Set up initial state
     policy_solver.initialize()
-        
-    # # Bind the drawer with the solver
-    # policy_drawer = LowLevelPolicyDrawer(policy_solver.policy(), drawer_height)
-    # policy_solver.set_policy_drawer(policy_drawer)
-    
-    # value_function_drawer = ValueFunctionDrawer(policy_solver.value_function(), drawer_height)
-    # policy_solver.set_value_function_drawer(value_function_drawer)
 
     t_policy_start = time.time() 
     # Compute the solution
@@ -61,17 +54,10 @@ if __name__ == '__main__':
     t_policy_end = time.time()
     pi_runtime = t_policy_end - t_policy_start
     
-    # # Save screen shot; this is in the current directory
-    # policy_drawer.save_screenshot("policy_iteration_results.pdf")
-    
-    # # Wait for a key press
-    # value_function_drawer.wait_for_key_press()
-    
     # Q3i: Add code to evaluate value iteration down here.
     vi_solver = ValueIterator(airport_environment)
     vi_solver.initialize()
     t_vi_start = time.time() 
-    # Compute the solution
     v_value_iteration, pi_value_iteration = vi_solver.solve_policy()
     t_vi_end = time.time()
     vi_runtime = t_vi_end - t_vi_start
