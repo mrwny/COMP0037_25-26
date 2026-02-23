@@ -99,9 +99,7 @@ class ValueIterator(DynamicProgrammingBase):
                         if action > LowLevelActionType.TERMINATE-1:
                             continue
                         # Compute p(s',r|s,a)
-                        s_prime, r, p = environment.next_state_and_reward_distribution(cell,
-                                                                                        # \ self._pi.action(x, y))
-                                                                                        action)
+                        s_prime, r, p = environment.next_state_and_reward_distribution(cell, action)
 
                         # Sum over the rewards
                         new_v = 0

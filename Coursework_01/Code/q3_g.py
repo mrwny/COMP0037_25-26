@@ -16,7 +16,7 @@ from generalized_policy_iteration.value_function_drawer import \
 from p2.low_level_environment import LowLevelEnvironment
 from p2.low_level_policy_drawer import LowLevelPolicyDrawer
 
-def calc_policy_diffs(env, pi_1, pi_2):
+def calculate_policy_differences(env, pi_1, pi_2):
     map = env.map()
     diff = 0
     total = 0
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     t_vi_end = time.time()
     vi_runtime = t_vi_end - t_vi_start
 
-    diff, total = calc_policy_diffs(airport_environment, pi_policy, pi_value_iteration)
+    diff, total = calculate_policy_differences(airport_environment, pi_policy, pi_value_iteration)
 
     print(f'Policy iteration runtime: {pi_runtime:.2f} seconds')
     print(f'Value iteration runtime: {vi_runtime:.2f} seconds')
