@@ -34,9 +34,6 @@ if __name__ == '__main__':
     
     # We only do 10 policy evaluation steps per iteration
     policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
-    
-    # We only do 10 policy evaluation steps per iteration
-    policy_solver.set_max_policy_evaluation_steps_per_iteration(10)
             
     # Evaluate the policy. In this part of the question, only this is supported.
     V = policy_solver.evaluate_policy()
