@@ -50,15 +50,26 @@ class TDPolicyPredictor(TDAlgorithmBase):
             
     def _update_value_function_from_episode(self, episode):
 
-        # Q1e:
-        # Complete implementation of this method
-        # Each time you update the state value function, you will need to make a
-        # call of the form:
-        #
-        # self._v.set_value(x_cell_coord, y_cell_coord, new_v)
+        alpha = self._alpha
+        gamma = self._gamma
 
-        # Example to show how to extract coordinates; this does not do anything useful
-        coords = episode.state(0).coords()
-        new_v = 0
-        self._v.set_value(coords[0], coords[1], new_v)
+        for t in range(episode.number_of_steps()):
+
+            s = episode.state(t)
+            r = episode.reward(t)
+            coords = s.coords()
+            v = self._v.value(coords[0], coords[1])
+
+            if (t < episode.number_of_steps() - 1) and (episode.state(t + 1) is not None):
+                s_prime = episode.state(t + 1)
+                coords_prime = s_prime.coords()
+                v_prime = self._v.value(coords_prime[0], coords_prime[1])
+            else:
+                v_prime = 0
+
+            delta = r + gamma * v_prime - v
+            new_v = v + alpha * delta
+            self._v.set_value(coords[0], coords[1], new_v)
+
+
 
