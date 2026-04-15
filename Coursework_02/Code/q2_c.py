@@ -7,6 +7,10 @@ Created on 9 Mar 2023
 '''
 
 import math
+import os
+import random
+
+import numpy as np
 
 from common.scenarios import corridor_scenario
 
@@ -22,6 +26,8 @@ from p1.low_level_actions import LowLevelActionType
 from p1.low_level_policy_drawer import LowLevelPolicyDrawer
 
 if __name__ == '__main__':
+    random.seed(10)
+    np.random.seed(10)
     airport_map, drawer_height = corridor_scenario()
 
     # Show the scenario        
@@ -54,4 +60,10 @@ if __name__ == '__main__':
         greedy_optimal_policy_drawer.update()
         pi.set_epsilon(1/math.sqrt(1+0.25*i))
         print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
-        
+
+    output_dir = 'figures/2c'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    airport_map_drawer.save_screenshot(os.path.join(output_dir, 'scenario_map.pdf'))
+    value_function_drawer.save_screenshot(os.path.join(output_dir, 'value_function.pdf'))
+    greedy_optimal_policy_drawer.save_screenshot(os.path.join(output_dir, 'policy.pdf'))
