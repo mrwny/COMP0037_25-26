@@ -20,6 +20,7 @@ from common.airport_map_drawer import AirportMapDrawer
 from td.q_learner import QLearner
 
 from generalized_policy_iteration.value_function_drawer import ValueFunctionDrawer
+from generalized_policy_iteration.policy_evaluator import PolicyEvaluator
 
 from p1.low_level_environment import LowLevelEnvironment
 from p1.low_level_actions import LowLevelActionType
@@ -61,8 +62,20 @@ if __name__ == '__main__':
             pi.set_epsilon(1/math.sqrt(1+0.25*i))
             print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
 
+        # Evaluate the learned greedy policy exactly via DP
+        pi_learned = policy_learner.policy()
+        pi_learned.set_epsilon(0)
+
+        pe = PolicyEvaluator(env)
+        pe.set_policy(pi_learned)
+        pe.evaluate()
+
+        v_dp_drawer = ValueFunctionDrawer(pe.value_function(), drawer_height)
+        v_dp_drawer.update()
+
         output_dir = 'figures/2d'
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         value_function_drawer.save_screenshot(os.path.join(output_dir, f'value_function_{num_iterations}.pdf'))
         greedy_optimal_policy_drawer.save_screenshot(os.path.join(output_dir, f'policy_{num_iterations}.pdf'))
+        v_dp_drawer.save_screenshot(os.path.join(output_dir, f'value_function_dp_{num_iterations}.pdf'))
