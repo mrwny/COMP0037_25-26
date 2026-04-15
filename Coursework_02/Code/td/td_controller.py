@@ -6,6 +6,7 @@ Created on 8 Mar 2023
 
 import random
 import math
+import time
 import numpy as np
 
 from monte_carlo.episode_sampler import EpisodeSampler
@@ -43,12 +44,13 @@ class TDController(TDAlgorithmBase):
     def policy(self):
         return self._pi
 
-    def find_policy(self):
+    def find_policy(self) -> list:
         
         # Although this can be done in real-time, we follow the convention
-        # of running it MC-like. 
+        # of running it MC-like.
         episode_sampler = EpisodeSampler(self._environment)
-        
+        prev_time = time.time()
+        times = []
         for episode in range(self._number_of_episodes):
 
             # Choose the start for the episode            
@@ -72,7 +74,10 @@ class TDController(TDAlgorithmBase):
                 self._update_action_and_value_functions_from_episode(episode)
                 
             self._add_episode_to_experience_replay_buffer(new_episode)
-        
+            current_time = time.time()
+            times.append(current_time - prev_time)
+            prev_time = current_time
+        return times
     def _update_action_and_value_functions_from_episode(self, episode):
         raise NotImplementedError()
         
