@@ -7,6 +7,9 @@ Created on 9 Mar 2023
 '''
 
 import math
+import os
+import random
+import numpy as np
 
 from common.scenarios import test_2x2_scenario
 from common.scenarios import test_3x3_scenario
@@ -24,6 +27,8 @@ from p1.low_level_actions import LowLevelActionType
 from p1.low_level_policy_drawer import LowLevelPolicyDrawer
 
 if __name__ == '__main__':
+    random.seed(10)
+    np.random.seed(10)
     airport_map, drawer_height = test_2x2_scenario()
 
     # Show the scenario        
@@ -49,11 +54,23 @@ if __name__ == '__main__':
     value_function_drawer = ValueFunctionDrawer(policy_learner.value_function(), drawer_height)    
     greedy_optimal_policy_drawer = LowLevelPolicyDrawer(policy_learner.policy(), drawer_height)
     
-    for i in range(10000):
+    for i in range(15000):
         print(i)
         policy_learner.find_policy()
         value_function_drawer.update()
         greedy_optimal_policy_drawer.update()
         pi.set_epsilon(1/math.sqrt(1+0.25*i))
         print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
-        
+    
+    output_dir = 'figures/2g'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    file_name_scenarios = {
+        "2x2 Scenario": "2x2",
+        "3x3 Scenario": "3x3", 
+        "Two Row Scenario": "two_row"
+    }
+    value_function_drawer.save_screenshot(os.path.join(output_dir, f'value_function_{file_name_scenarios.get(airport_map.name(), "default")}.pdf'))
+    greedy_optimal_policy_drawer.save_screenshot(os.path.join(output_dir, f'policy_{file_name_scenarios.get(airport_map.name(), "default")}.pdf'))
+       
