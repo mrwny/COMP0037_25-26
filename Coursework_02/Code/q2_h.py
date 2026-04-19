@@ -53,11 +53,24 @@ if __name__ == '__main__':
     learners[0].set_initial_policy(pi[0])
     v_renderers[0] = ValueFunctionDrawer(learners[0].value_function(), drawer_height)    
     p_renderers[0] = LowLevelPolicyDrawer(learners[0].policy(), drawer_height)
-    
-    
-    pi[1] = env.initial_policy()
+
+    for i in range(10000):
+        print(i)
+        learners[0].find_policy()
+        v_renderers[0].update()
+        p_renderers[0].update()
+        pi[0].set_epsilon(1/math.sqrt(1+0.25*i))
+
+
+    # Reset for Q-learning
+    random.seed(10)
+    np.random.seed(10)
+    airport_map, drawer_height = corridor_scenario()
+    env_q = LowLevelEnvironment(airport_map)   
+
+    pi[1] = env_q.initial_policy()
     pi[1].set_epsilon(1)
-    learners[1] = QLearner(env)
+    learners[1] = QLearner(env_q)
     learners[1].set_alpha(0.1)
     learners[1].set_experience_replay_buffer_size(64)
     learners[1].set_number_of_episodes(32)
@@ -67,11 +80,10 @@ if __name__ == '__main__':
 
     for i in range(10000):
         print(i)
-        for l in range(2):
-            learners[l].find_policy()
-            v_renderers[l].update()
-            p_renderers[l].update()
-            pi[l].set_epsilon(1/math.sqrt(1+0.25*i))
+        learners[1].find_policy()
+        v_renderers[1].update()
+        p_renderers[1].update()
+        pi[1].set_epsilon(1/math.sqrt(1+0.25*i))
 
     output_dir = 'figures/2h'
     if not os.path.exists(output_dir):
@@ -115,7 +127,7 @@ if __name__ == '__main__':
     plt.title('Average State Value per Column: Q-learning vs SARSA')
     plt.legend()
     plt.grid(True)
-    plt.savefig('avg_value_comparison.pdf')
+    plt.savefig(os.path.join(output_dir, 'avg_value_comparison.pdf'))
     plt.show()
 
 
@@ -130,7 +142,7 @@ if __name__ == '__main__':
     plt.xlabel('Column')
     plt.ylabel('Row')
     plt.title('State Value Difference (Q-learning minus SARSA)')
-    plt.savefig('value_difference_heatmap.pdf')
+    plt.savefig(os.path.join(output_dir,'value_difference_heatmap.pdf'))
     plt.show()
 
 
@@ -154,7 +166,7 @@ if __name__ == '__main__':
     plt.xlabel('Column')
     plt.ylabel('Row')
     plt.title('Policy Agreement: Q-learning vs SARSA')
-    plt.savefig('policy_agreement.pdf')
+    plt.savefig(os.path.join(output_dir,'policy_agreement.pdf'))
     plt.show()
 
     total = np.nansum(~np.isnan(agree))
@@ -190,5 +202,5 @@ if __name__ == '__main__':
     plt.title('Action Distribution: Q-learning vs SARSA')
     plt.legend()
     plt.tight_layout()
-    plt.savefig('action_distribution.pdf')
+    plt.savefig(os.path.join(output_dir,'action_distribution.pdf'))
     plt.show()
