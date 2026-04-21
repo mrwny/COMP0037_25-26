@@ -66,5 +66,6 @@ class QLearner(TDController):
             a = episode.action(step_count)
 
         # Final value
-        new_q = reward
+        q = self._Q[coords][a]
+        new_q = q + self._alpha * (reward - q)
         self._update_q_and_policy(coords, a, new_q)
