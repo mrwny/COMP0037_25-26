@@ -54,7 +54,7 @@ if __name__ == '__main__':
     value_function_drawer = ValueFunctionDrawer(policy_learner.value_function(), drawer_height)    
     greedy_optimal_policy_drawer = LowLevelPolicyDrawer(policy_learner.policy(), drawer_height)
     
-    for i in range(15000):
+    for i in range(10000):
         print(i)
         policy_learner.find_policy()
         value_function_drawer.update()
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         pi.set_epsilon(1/math.sqrt(1+0.25*i))
         print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
     
-    output_dir = 'figures/2g'
+    output_dir = 'Coursework_02/Code/figures/2g'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 

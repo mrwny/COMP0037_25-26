@@ -85,7 +85,7 @@ if __name__ == '__main__':
         p_renderers[1].update()
         pi[1].set_epsilon(1/math.sqrt(1+0.25*i))
 
-    output_dir = 'figures/2h'
+    output_dir = 'Coursework_02/Code/figures/2h'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
