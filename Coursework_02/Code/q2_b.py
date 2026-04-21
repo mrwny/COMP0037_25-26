@@ -30,7 +30,7 @@ from p1.low_level_policy_drawer import LowLevelPolicyDrawer
 if __name__ == '__main__':
     random.seed(10)
     np.random.seed(10)
-    airport_map, drawer_height = test_3x3_scenario()
+    airport_map, drawer_height = test_two_row_scenario()
 
     # Show the scenario        
     airport_map_drawer = AirportMapDrawer(airport_map, drawer_height)
