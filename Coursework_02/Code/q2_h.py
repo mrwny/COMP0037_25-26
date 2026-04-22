@@ -146,7 +146,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-    # Policy agreement map
+    # Policy agreement stat
     pi_sarsa = learners[0].policy()
     pi_qlearn = learners[1].policy()
     env_map = env.map()
@@ -159,15 +159,6 @@ if __name__ == '__main__':
             a_sarsa = pi_sarsa.action(x, y)
             a_qlearn = pi_qlearn.action(x, y)
             agree[x, y] = 1 if a_sarsa == a_qlearn else 0
-
-    plt.figure(figsize=(12, 4))
-    plt.imshow(agree.T[::-1], cmap='RdYlGn', aspect='auto', vmin=0, vmax=1)
-    plt.colorbar(label='Green = agree, Red = disagree')
-    plt.xlabel('Column')
-    plt.ylabel('Row')
-    plt.title('Policy Agreement: Q-learning vs SARSA')
-    plt.savefig(os.path.join(output_dir,'policy_agreement.pdf'))
-    plt.show()
 
     total = np.nansum(~np.isnan(agree))
     matching = np.nansum(agree == 1)
